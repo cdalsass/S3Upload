@@ -1,13 +1,14 @@
 var file = require('fs');
-fs = require('fs');
-Q = require('q');
+var fs = require('fs');
+var Q = require('q');
+var md5 = require('MD5');
 
-var S3Upload = {
+var s3upload = {
 
     Authenticate: function(credentials) {
         this.AWS = require('aws-sdk'); 
 
-        //console.log("update credentials with accessKeyId : " + credentials.accessKeyId + " secretAccessKey " + credentials.secretAccessKey + " region " + credentials.region);
+        //console.console.log("update credentials with accessKeyId : " + credentials.accessKeyId + " secretAccessKey " + credentials.secretAccessKey + " region " + credentials.region);
 
         this.AWS.config.update(credentials);
     },
@@ -24,6 +25,7 @@ var S3Upload = {
             Key: remoteFilename,
             Body: fileBuffer,
             ContentType: metaData
+           // 'Content-MD5': md5(fileBuffer)
         }, function(error, response) {
 
             if (error) {
@@ -61,13 +63,13 @@ var S3Upload = {
         });
         this.UploadFile(bucket, final_filename, tempfile, function(err) {
             if (!err) {
-                log.debug("Just stored an image with to amazon as " + final_filename);
+                console.log.debug("Just stored an image with to amazon as " + final_filename);
             } else {
-                log.debug("hit error uploading file to amazon bucket " + bucket + " error: " + JSON.stringify(err));
+                console.log("hit error uploading file " + final_filename + " to amazon bucket " + bucket + " error: " + JSON.stringify(err));
             }
             fs.unlink(tempfile, function(err) {
                 if (!err) {
-                    log.debug("just deleted " + tempfile);
+                    console.log("just deleted " + tempfile);
                     deferred.resolve();
                 } else {
                     deferred.reject(new Error(err));
@@ -85,5 +87,5 @@ var S3Upload = {
 }
 
 if (typeof module != 'undefined') {
-    module.exports = S3Upload;
+    module.exports = s3upload;
 }
