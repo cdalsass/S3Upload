@@ -1,7 +1,7 @@
 var file = require('fs');
 var fs = require('fs');
 var Q = require('q');
-var md5 = require('MD5');
+//var md5 = require('MD5');
 
 var s3upload = {
 
